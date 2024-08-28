@@ -55,7 +55,7 @@ unset_proxy_vars() {
 cleanup() {
     echo "Performing cleanup..."
     if [[ -n "${MIHOMO_PID:-}" ]]; then
-        kill "${MIHOMO_PID}" 2>/dev/null || true
+        sudo kill "${MIHOMO_PID}" 2>/dev/null || true
         wait "${MIHOMO_PID}" 2>/dev/null || true
     fi
     unset_proxy_vars
@@ -114,7 +114,7 @@ while IFS= read -r line; do
     set_proxy_vars
     
     # Test UDP connection
-    if curl -sf --http3-only --max-time 5 http://cp.cloudflare.com/generate_204 &> /dev/null; then
+    if curl -sf --http3-only --max-time 5 https://cp.cloudflare.com/generate_204 &> /dev/null; then
         echo "${line}" >> "${UDP_CONFIGS_FILE}"
         echo "Config passed UDP test"
         
@@ -138,7 +138,7 @@ while IFS= read -r line; do
     fi
     
     # Clean up
-    kill "${MIHOMO_PID}"
+    sudo kill "${MIHOMO_PID}"
     wait "${MIHOMO_PID}" 2>/dev/null
     unset MIHOMO_PID
     unset_proxy_vars
