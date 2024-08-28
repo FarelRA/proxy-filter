@@ -69,7 +69,7 @@ if [[ ! -f "${MIHOMO_BINARY}" ]]; then
 fi
 if [[ ! -f "${CURL3_BINARY}" ]]; then
     echo "Downloading and setting up curl3..."
-    curl -L "${CURL3_URL}" | tar -xf - "curl" && mv curl "${CURL3_BINARY}"
+    curl -L "${CURL3_URL}" | tar -Jxf - "curl" && mv curl "${CURL3_BINARY}"
     chmod +x "${CURL3_BINARY}"
 fi
 
