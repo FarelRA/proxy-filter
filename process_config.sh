@@ -35,22 +35,6 @@ urlencode() {
     echo "${encoded}"
 }
 
-# Function to set proxy variables
-set_proxy_vars() {
-    export no_proxy="localhost,127.0.0.1,localaddress,.localdomain.com"
-    export all_proxy="socks5://127.0.0.1:7891"
-    export http_proxy="http://127.0.0.1:7890"
-    export {https,ftp,rsync}_proxy="${http_proxy}"
-    export {HTTP,HTTPS,FTP,RSYNC}_PROXY="${http_proxy}"
-    export ALL_PROXY="${all_proxy}"
-}
-
-# Function to unset proxy variables
-unset_proxy_vars() {
-    unset {no,all,http,https,ftp,rsync}_proxy
-    unset {ALL,HTTP,HTTPS,FTP,RSYNC}_PROXY
-}
-
 # Cleanup function
 cleanup() {
     echo "Performing cleanup..."
@@ -58,7 +42,6 @@ cleanup() {
         kill "${MIHOMO_PID}" 2>/dev/null || true
         wait "${MIHOMO_PID}" 2>/dev/null || true
     fi
-    unset_proxy_vars
     rm -f "${CLASH_CONFIGS_DIR}/config.yaml"
     rm -rf "${CLASH_CONFIGS_DIR}"
     echo "Cleanup completed."
@@ -110,11 +93,8 @@ while IFS= read -r line; do
     MIHOMO_PID=$!
     sleep 5  # Wait for mihomo to start
     
-    # Set proxy variables
-    set_proxy_vars
-    
     # Test UDP connection
-    if curl -sf --http3-only --max-time 5 https://cp.cloudflare.com/generate_204 &> /dev/null; then
+    if curl -sfk --http3-only --max-time 5 --socks5 "127.0.0.1:7891" "https://cp.cloudflare.com/generate_204" &> /dev/null; then
         echo "${line}" >> "${UDP_CONFIGS_FILE}"
         echo "Config passed UDP test"
         
@@ -141,7 +121,6 @@ while IFS= read -r line; do
     kill "${MIHOMO_PID}"
     wait "${MIHOMO_PID}" 2>/dev/null
     unset MIHOMO_PID
-    unset_proxy_vars
     rm "${CLASH_CONFIGS_DIR}/config.yaml"
 done < "${RAW_CONFIGS_FILE}"
 
