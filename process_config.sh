@@ -5,6 +5,7 @@ set -euo pipefail
 # Constants
 RAW_CONFIGS_URL="https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/sub/splitted/vmess.txt"
 MIHOMO_URL="https://github.com/MetaCubeX/mihomo/releases/download/v1.18.7/mihomo-linux-amd64-v1.18.7.gz"
+CURL3_URL="https://github.com/stunnel/static-curl/releases/download/8.9.1/curl-linux-x86_64-8.9.1.tar.xz"
 CLASH_CONFIG_URL="https://sub.bonds.id/sub2?target=clash&url=%s&insert=false&config=base%%2Fdatabase%%2Fconfig%%2Fstandard%%2Fstandard_redir.ini&emoji=false&list=false&udp=true&tfo=false&expand=false&scv=true&fdn=false&sort=false&new_name=true"
 
 # Setup environment
@@ -16,6 +17,7 @@ VMESS_CF_CONFIGS_FILE="${OUTPUT_DIR}/vmess_cf_configs.txt"
 VMESS_CONFIGS_FILE="${OUTPUT_DIR}/vmess_configs.txt"
 CLASH_CONFIGS_DIR="${SCRIPT_DIR}/clash_configs"
 MIHOMO_BINARY="${SCRIPT_DIR}/mihomo"
+CURL3_BINARY="${SCRIPT_DIR}/curl3"
 
 # Function to URL encode a string
 urlencode() {
@@ -42,6 +44,7 @@ cleanup() {
         kill "${MIHOMO_PID}" 2>/dev/null || true
         wait "${MIHOMO_PID}" 2>/dev/null || true
     fi
+	rm -r "${CURL3_BINARY}"
     rm -f "${CLASH_CONFIGS_DIR}/config.yaml"
     rm -rf "${CLASH_CONFIGS_DIR}"
     echo "Cleanup completed."
@@ -58,11 +61,16 @@ mkdir -p "${CLASH_CONFIGS_DIR}"
 echo "Downloading raw configs..."
 curl -sS "${RAW_CONFIGS_URL}" -o "${RAW_CONFIGS_FILE}"
 
-# Download and setup mihomo xclash
+# Download and setup mihomo and curl
 if [[ ! -f "${MIHOMO_BINARY}" ]]; then
     echo "Downloading and setting up mihomo xclash..."
     curl -L "${MIHOMO_URL}" | gunzip > "${MIHOMO_BINARY}"
     chmod +x "${MIHOMO_BINARY}"
+fi
+if [[ ! -f "${CURL3_BINARY}" ]]; then
+    echo "Downloading and setting up curl3..."
+    curl -L "${CURL3_URL}" | tar -zxvf - "curl" && mv curl "${CURL3_BINARY}"
+    chmod +x "${CURL3_BINARY}"
 fi
 
 # Test configs for UDP connection and process them
@@ -94,7 +102,7 @@ while IFS= read -r line; do
     sleep 5  # Wait for mihomo to start
     
     # Test UDP connection
-    if curl -vfk --http3-only --max-time 5 --socks5 "127.0.0.1:7891" "https://cp.cloudflare.com/generate_204"; then
+    if "${CURL3_BINARY}" -vfk --http3-only --max-time 5 --socks5 "127.0.0.1:7891" "https://cp.cloudflare.com/generate_204"; then
         echo "${line}" >> "${UDP_CONFIGS_FILE}"
         echo "Config passed UDP test"
         
