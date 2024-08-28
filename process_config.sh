@@ -94,7 +94,7 @@ while IFS= read -r line; do
     sleep 5  # Wait for mihomo to start
     
     # Test UDP connection
-    if curl -sfk --http3-only --max-time 5 --socks5 "127.0.0.1:7891" "https://cp.cloudflare.com/generate_204" &> /dev/null; then
+    if curl -vfk --http3-only --max-time 5 --socks5 "127.0.0.1:7891" "https://cp.cloudflare.com/generate_204"; then
         echo "${line}" >> "${UDP_CONFIGS_FILE}"
         echo "Config passed UDP test"
         
