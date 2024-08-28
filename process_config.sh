@@ -55,7 +55,7 @@ unset_proxy_vars() {
 cleanup() {
     echo "Performing cleanup..."
     if [[ -n "${MIHOMO_PID:-}" ]]; then
-        sudo kill "${MIHOMO_PID}" 2>/dev/null || true
+        kill "${MIHOMO_PID}" 2>/dev/null || true
         wait "${MIHOMO_PID}" 2>/dev/null || true
     fi
     unset_proxy_vars
@@ -106,7 +106,7 @@ while IFS= read -r line; do
     curl -sS "${clash_config_url}" -o "${CLASH_CONFIGS_DIR}/config.yaml"
     
     # Start mihomo xclash
-    sudo "${MIHOMO_BINARY}" -d "${CLASH_CONFIGS_DIR}" &
+    "${MIHOMO_BINARY}" -d "${CLASH_CONFIGS_DIR}" &
     MIHOMO_PID=$!
     sleep 5  # Wait for mihomo to start
     
@@ -138,7 +138,7 @@ while IFS= read -r line; do
     fi
     
     # Clean up
-    sudo kill "${MIHOMO_PID}"
+    kill "${MIHOMO_PID}"
     wait "${MIHOMO_PID}" 2>/dev/null
     unset MIHOMO_PID
     unset_proxy_vars
