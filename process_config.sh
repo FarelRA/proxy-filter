@@ -87,6 +87,14 @@ echo "Testing configs for UDP connection and processing them..."
 non_cf_count=1
 cf_count=1
 
+# Setup files
+rm -f "${UDP_CONFIGS_FILE}"
+rm -f "${VMESS_CF_CONFIGS_FILE}"
+rm -f "${VMESS_CONFIGS_FILE}"
+touch "${UDP_CONFIGS_FILE}"
+touch "${VMESS_CF_CONFIGS_FILE}"
+touch "${VMESS_CONFIGS_FILE}"
+
 while IFS= read -r line; do
     echo "Testing config: ${line}"
     
@@ -98,15 +106,15 @@ while IFS= read -r line; do
     curl -sS "${clash_config_url}" -o "${CLASH_CONFIGS_DIR}/config.yaml"
     
     # Start mihomo xclash
-    "${MIHOMO_BINARY}" -d "${CLASH_CONFIGS_DIR}" &
+    sudo "${MIHOMO_BINARY}" -d "${CLASH_CONFIGS_DIR}" &
     MIHOMO_PID=$!
-    sleep 10  # Wait for mihomo to start
+    sleep 5  # Wait for mihomo to start
     
     # Set proxy variables
     set_proxy_vars
     
     # Test UDP connection
-    if curl -vf --http3-only --max-time 4 https://cloudflare.com &> /dev/null; then
+    if curl -sf --http3-only --max-time 5 http://cp.cloudflare.com/generate_204 &> /dev/null; then
         echo "${line}" >> "${UDP_CONFIGS_FILE}"
         echo "Config passed UDP test"
         
