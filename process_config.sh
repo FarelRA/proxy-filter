@@ -100,7 +100,7 @@ while IFS= read -r line; do
     # Start mihomo xclash
     "${MIHOMO_BINARY}" -d "${CLASH_CONFIGS_DIR}" &
     MIHOMO_PID=$!
-    sleep 5  # Wait for mihomo to start
+    sleep 10  # Wait for mihomo to start
     
     # Set proxy variables
     set_proxy_vars
