@@ -32,24 +32,24 @@ jobs:
         pip install requests
 
     - name: Setup WireGuard
-      shell: cmd
-      run: python .\install-wg.py
+      shell: pwsh
+      run: |
+        .\Run-As-Admin.ps1 -command "python .\install-wg.py"
 
     - name: Start Cloudflare Warp
-      shell: cmd
+      shell: pwsh
       run: |
-        "C:\Program Files\WireGuard\wireguard.exe" /installtunnelservice .\wgcf-profile.conf
-        timeout 5
+        .\Run-As-Admin.ps1 -command '& "C:\Program Files\WireGuard\wireguard.exe" /installtunnelservice .\wgcf-profile.conf'
+        Start-Sleep -Seconds 5
 
     - name: Run proxyIP filter
-      shell: cmd
       run: python .\test-proxyip.py
 
     - name: Stop Cloudflare Warp
-      shell: cmd
+      shell: pwsh
       run: |
-        "C:\Program Files\WireGuard\wireguard.exe" /uninstalltunnelservice wgcf-profile
-        timeout 5
+        .\Run-As-Admin.ps1 -command '& "C:\Program Files\WireGuard\wireguard.exe" /uninstalltunnelservice wgcf-profile'
+        Start-Sleep -Seconds 5
 
     - name: Process CSV and update DNS
       env:
@@ -57,7 +57,6 @@ jobs:
         CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
         CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
         CLOUDFLARE_DOMAIN_NAME: ${{ secrets.CLOUDFLARE_DOMAIN_NAME }}
-      shell: cmd
       run: python .\update_dns.py
 
     - name: Commit and push changes
