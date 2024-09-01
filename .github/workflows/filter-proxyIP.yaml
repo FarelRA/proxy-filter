@@ -30,15 +30,27 @@ jobs:
         python -m pip install --upgrade pip
         pip install requests
 
+    - name: Setup WireGuard
+      shell: cmd
+      run: .\install-wg.bat
+
+    - name: Start Cloudflare Warp
+      shell: cmd
+      run: .\start-warp.bat
+
     - name: Run proxyIP filter
       shell: cmd
       run: python -c .\test-proxyip.py
 
+    - name: Stop Cloudflare Warp
+      shell: cmd
+      run: .\stop-warp.bat
+
     - name: Process CSV and update DNS
       env:
         CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
         CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
-        CLOUDFLARE_RECORD_ID: ${{ secrets.CLOUDFLARE_RECORD_ID }}
         CLOUDFLARE_DOMAIN_NAME: ${{ secrets.CLOUDFLARE_DOMAIN_NAME }}
       shell: cmd
       run: python -c .\update_dns.py
