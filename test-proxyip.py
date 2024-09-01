@@ -43,7 +43,7 @@ def compile_as_files(folder, output_file):
     logging.info(f"Compiled AS file created: {output_file}")
 
 def run_iptest(raw_file, port, tls_mode, max_ips, outfile, speedtest, limit):
-    iptest_path = os.path.join(os.getcwd(), 'iptest')
+    iptest_path = os.path.join(os.getcwd(), 'iptest.exe')
     if not os.path.exists(iptest_path):
         logging.error("iptest command not found in the current directory.")
         sys.exit(1)
