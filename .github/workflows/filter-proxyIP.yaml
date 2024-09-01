@@ -33,8 +33,7 @@ jobs:
 
     - name: Setup WireGuard
       shell: cmd
-      run: |
-        python -c .\install-wg.py
+      run: python .\install-wg.py
 
     - name: Start Cloudflare Warp
       shell: cmd
@@ -44,8 +43,7 @@ jobs:
 
     - name: Run proxyIP filter
       shell: cmd
-      run: |
-        python -c .\test-proxyip.py
+      run: python .\test-proxyip.py
 
     - name: Stop Cloudflare Warp
       shell: cmd
@@ -60,8 +58,7 @@ jobs:
         CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
         CLOUDFLARE_DOMAIN_NAME: ${{ secrets.CLOUDFLARE_DOMAIN_NAME }}
       shell: cmd
-      run: |
-        python -c .\update_dns.py
+      run: python .\update_dns.py
 
     - name: Commit and push changes
       run: |
