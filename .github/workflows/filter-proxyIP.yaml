@@ -32,11 +32,13 @@ jobs:
 
     - name: Setup WireGuard
       shell: cmd
-      run: .\install-wg.bat
+      run: python -c .\install-wg.py
 
     - name: Start Cloudflare Warp
       shell: cmd
-      run: .\start-warp.bat
+      run: |
+        "C:\Program Files\WireGuard\wireguard.exe" /installtunnelservice .\wgcf-profile.conf
+        timeout 5
 
     - name: Run proxyIP filter
       shell: cmd
@@ -44,7 +46,9 @@ jobs:
 
     - name: Stop Cloudflare Warp
       shell: cmd
-      run: .\stop-warp.bat
+      run: |
+        "C:\Program Files\WireGuard\wireguard.exe" /uninstalltunnelservice wgcf-profile
+        timeout 5
 
     - name: Process CSV and update DNS
       env:
