@@ -56,8 +56,7 @@ def run_iptest(raw_file, port, tls_mode, max_ips, outfile, speedtest, limit):
             f"-tls={'true' if tls_mode else 'false'}",
             f"-max={max_ips}",
             f"-outfile={outfile}",
-            f"-speedtest={speedtest}",
-            f"-limit={limit}"
+            f"-speedtest={speedtest}"
         ]
         subprocess.run(cmd, check=True)
         logging.info(f"Test completed. Results saved in {outfile}")
@@ -81,7 +80,6 @@ def main():
     max_ips = 100
     outfile = "ip_filtered.csv"
     speedtest = 2
-    limit = 20
 
     raw_zip = "txt.zip"
     raw_zip_folder = "txt"
@@ -92,7 +90,7 @@ def main():
     download_file("https://zip.baipiao.eu.org", raw_zip)
     extract_zip(raw_zip, raw_zip_folder)
     compile_as_files(raw_zip_folder, raw_file)
-    run_iptest(raw_file, port, tls_mode, max_ips, outfile, speedtest, limit)
+    run_iptest(raw_file, port, tls_mode, max_ips, outfile, speedtest)
 
     cleanup(raw_zip_folder, raw_file)
     os.remove(raw_zip)
