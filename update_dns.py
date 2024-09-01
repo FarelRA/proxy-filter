@@ -6,7 +6,7 @@ from typing import List, Dict, Optional
 def get_valid_ips(csv_file: str) -> List[str]:
     valid_ips = set()
     try:
-        with open(csv_file, 'r') as f:
+        with open(csv_file, encoding='utf-8') as f:
             reader = csv.reader(f)
             next(reader)  # Skip header row
             for row in reader:
