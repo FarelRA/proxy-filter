@@ -39,8 +39,10 @@ jobs:
     - name: Start Cloudflare Warp
       shell: pwsh
       run: |
+        C:\Windows\System32\curl.exe --ipv4 ip.me
         .\Run-As-Admin.ps1 -command '& "C:\Program Files\WireGuard\wireguard.exe" /installtunnelservice .\wgcf-profile.conf'
         Start-Sleep -Seconds 5
+        C:\Windows\System32\curl.exe --ipv4 ip.me
 
     - name: Run proxyIP filter
       run: python .\test-proxyip.py
