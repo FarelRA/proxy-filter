@@ -11,6 +11,12 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
+
+      - name: Set up environment
+        run: |
+          mkdir -p processed_config
+          echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+
       - name: Checkout repository
         uses: actions/checkout@v4.1.2
 
@@ -20,11 +26,6 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           git pull --rebase
-
-      - name: Set up environment
-        run: |
-          mkdir -p processed_config
-          echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
 
       - name: Process Config
         run: |
