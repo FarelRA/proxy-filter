@@ -47,6 +47,7 @@ jobs:
     - name: Start Cloudflare Warp
       shell: pwsh
       run: |
+        Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
         refreshenv
         C:\Windows\System32\curl.exe --ipv4 ip.me
         gsudo wireguard /installtunnelservice .\wgcf-profile.conf
@@ -59,6 +60,7 @@ jobs:
     - name: Stop Cloudflare Warp
       shell: pwsh
       run: |
+        Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
         refreshenv
         gsudo wireguard /uninstalltunnelservice wgcf-profile
         Start-Sleep -Seconds 5
