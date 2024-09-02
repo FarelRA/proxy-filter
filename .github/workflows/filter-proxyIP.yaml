@@ -39,11 +39,6 @@ jobs:
     - name: Install WireGuard and gsudo
       run: choco install wireguard gsudo -y
 
-    - name: Setup WireGuard
-      run: |
-        refreshenv
-        gsudo python .\install-wg.py
-
     - name: Start Cloudflare Warp
       shell: pwsh
       run: |
