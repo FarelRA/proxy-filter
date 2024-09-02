@@ -44,10 +44,7 @@ jobs:
       run: |
         Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
         refreshenv
-        C:\Windows\System32\curl.exe --ipv4 ip.me
-        gsudo wireguard /installtunnelservice .\wgcf-profile.conf
-        Start-Sleep -Seconds 5
-        C:\Windows\System32\curl.exe --ipv4 ip.me
+        .\manage-warp.ps1 -Action start
 
     - name: Run proxyIP filter
       run: python .\test-proxyip.py
@@ -57,8 +54,7 @@ jobs:
       run: |
         Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
         refreshenv
-        gsudo wireguard /uninstalltunnelservice wgcf-profile
-        Start-Sleep -Seconds 5
+        .\manage-warp.ps1 -Action stop
 
     - name: Process CSV and update DNS
       env:
