@@ -53,7 +53,7 @@ def cloudflare_api_call(method: str, url: str, data: Optional[Dict] = None) -> O
     headers = {
         "Content-Type": "application/json",
         "X-Auth-Email": os.environ['CLOUDFLARE_EMAIL'],
-        "X-Auth-Key": os.environ['CLOUDFLARE_API_KEY']
+        "X-Auth-Key": os.environ['CLOUDFLARE_API_TOKEN']
     }
     try:
         response = requests.request(method, url, json=data, headers=headers)
