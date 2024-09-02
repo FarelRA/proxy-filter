@@ -30,10 +30,17 @@ jobs:
         python -m pip install --upgrade pip
         pip install requests
 
-    - name: Install WireGuard and gsudo
+    - name: Install Chocolatey
+      shell: pwsh
       run: |
-        winget install -e --id WireGuard.WireGuard
-        winget install -e --id gerardog.gsudo
+        Set-ExecutionPolicy Bypass -Scope Process -Force
+        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+    - name: Install WireGuard and gsudo
+      run: choco install wireguard gsudo -y
+
+    - name: Setup WireGuard
+      run: gsudo python .\install-wg.py
 
     - name: Start Cloudflare Warp
       shell: pwsh
