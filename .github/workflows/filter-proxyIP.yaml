@@ -40,11 +40,14 @@ jobs:
       run: choco install wireguard gsudo -y
 
     - name: Setup WireGuard
-      run: gsudo python .\install-wg.py
+      run: |
+        refreshenv
+        gsudo python .\install-wg.py
 
     - name: Start Cloudflare Warp
       shell: pwsh
       run: |
+        refreshenv
         C:\Windows\System32\curl.exe --ipv4 ip.me
         gsudo wireguard /installtunnelservice .\wgcf-profile.conf
         Start-Sleep -Seconds 5
@@ -56,6 +59,7 @@ jobs:
     - name: Stop Cloudflare Warp
       shell: pwsh
       run: |
+        refreshenv
         gsudo wireguard /uninstalltunnelservice wgcf-profile
         Start-Sleep -Seconds 5
 
