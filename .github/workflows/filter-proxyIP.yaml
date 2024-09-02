@@ -16,7 +16,6 @@ jobs:
       uses: actions/checkout@v4.1.2
 
     - name: Set up Git
-      shell: cmd
       run: |
         git config user.name github-actions
         git config user.email github-actions@github.com
@@ -31,16 +30,16 @@ jobs:
         python -m pip install --upgrade pip
         pip install requests
 
-    - name: Setup WireGuard
-      shell: pwsh
+    - name: Install WireGuard and gsudo
       run: |
-        .\Run-As-Admin.ps1 -command "python .\install-wg.py"
+        winget install -e --id WireGuard.WireGuard
+        winget install -e --id gerardog.gsudo
 
     - name: Start Cloudflare Warp
       shell: pwsh
       run: |
         C:\Windows\System32\curl.exe --ipv4 ip.me
-        .\Run-As-Admin.ps1 -command '& "C:\Program Files\WireGuard\wireguard.exe" /installtunnelservice .\wgcf-profile.conf'
+        gsudo wireguard /installtunnelservice .\wgcf-profile.conf
         Start-Sleep -Seconds 5
         C:\Windows\System32\curl.exe --ipv4 ip.me
 
@@ -50,7 +49,7 @@ jobs:
     - name: Stop Cloudflare Warp
       shell: pwsh
       run: |
-        .\Run-As-Admin.ps1 -command '& "C:\Program Files\WireGuard\wireguard.exe" /uninstalltunnelservice wgcf-profile'
+        gsudo wireguard /uninstalltunnelservice wgcf-profile
         Start-Sleep -Seconds 5
 
     - name: Process CSV and update DNS
